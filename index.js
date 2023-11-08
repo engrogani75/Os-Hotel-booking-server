@@ -54,21 +54,45 @@ async function run() {
     res.send(result)
  });
 
- app.get('/booking' , async(req, res) =>{
-  console.log(req.query);
-  let query = {}
-  if (req.query?.email) {
-    query = {email: req.query.email}
-  }
-  const cursor = bookingRoomColection.find(query);
-  const result = await cursor.toArray();
+
+
+app.get('/booking/:email', async(req, res) =>{
+
+  const bookingEmail = req.params.email;
+  const query = {email: bookingEmail}
+ 
+  const result = await bookingRoomColection.find(query).toArray();
   res.send(result)
 })
+
+
+
+
+//  app.get('/booking' , async(req, res) =>{
+//   console.log(req.query);
+//   let query = {}
+//   if (req.query?.email) {
+//     query = {email: req.query.email}
+//   }
+
+//   console.log( query);
+//   const cursor = bookingRoomColection.find(query);
+//   const result = await cursor.toArray();
+//   res.send(result)
+// })
 
    app.post('/booking', async(req, res) =>{
     const book = req.body;
     console.log(book);
     const result = await bookingRoomColection.insertOne(book)
+    res.send(result)
+   })
+
+
+   app.delete('/booking/:id', async(req, res) =>{
+    const id = req.params.id;
+    const query ={_id : new ObjectId(id)}
+    const result = await bookingRoomColection.deleteOne(query)
     res.send(result)
    })
 
