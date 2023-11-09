@@ -31,6 +31,7 @@ async function run() {
     const room = client.db("hoteBooking");
     const roomColection = room.collection('roomDeatis')
     const bookingRoomColection = room.collection('bookingRoom')
+    const reviewCollection = room.collection('customerReview')
 
 
     app.get('/rooms', async(req, res) =>{
@@ -66,6 +67,22 @@ app.get('/booking/:email', async(req, res) =>{
 })
 
 
+app.get('/review', async(req, res) =>{
+  const cursor =  bookingRoomColection.find();
+  const result = await cursor.toArray();
+  res.send(result)
+});
+
+
+
+
+app.get('/review/:id', async(req, res) =>{
+  const id = req.params.id
+  const query = {_id: new ObjectId(id)}
+  const result = await bookingRoomColection.find(query).toArray()
+  res.send(result)
+})
+
 
 
 //  app.get('/booking' , async(req, res) =>{
@@ -88,6 +105,12 @@ app.get('/booking/:email', async(req, res) =>{
     res.send(result)
    })
 
+   app.post('/review-customer', async(req, res) =>{
+    const review = req.body;
+    const result = await reviewCollection.insertOne(review)
+    res.send(result)
+   })
+
 
    app.delete('/booking/:id', async(req, res) =>{
     const id = req.params.id;
@@ -97,34 +120,7 @@ app.get('/booking/:email', async(req, res) =>{
    })
 
 
-<<<<<<< HEAD
-   app.get('/review', async(req, res) =>{
-    const cursor =  bookingRoomColection.find();
-    const result = await cursor.toArray();
-    res.send(result)
-  });
-
-
-  //  app.get('/review/:id', async(req, res) =>{
-
-  //   const id =req.params.id
-  //   const query = {_id: new ObjectId(id)}
-   
-  //   const result = await bookingRoomColection.find(query).toArray();
-  //   res.send(result)
-  // })
-
-  app.get('/review/:id', async(req, res) =>{
-    const id = req.params.id
-    const query = {_id: new ObjectId(id)}
-    const result = await bookingRoomColection.find(query).toArray()
-    res.send(result)
-  })
-
-
-=======
->>>>>>> 518eec0d59144155fc9384bb2fe291e685a680b9
-
+ 
 
 
 
