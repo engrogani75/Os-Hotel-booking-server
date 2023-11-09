@@ -97,6 +97,7 @@ app.get('/booking/:email', async(req, res) =>{
    })
 
 
+<<<<<<< HEAD
    app.get('/review', async(req, res) =>{
     const cursor =  bookingRoomColection.find();
     const result = await cursor.toArray();
@@ -121,6 +122,8 @@ app.get('/booking/:email', async(req, res) =>{
   })
 
 
+=======
+>>>>>>> 518eec0d59144155fc9384bb2fe291e685a680b9
 
 
 
