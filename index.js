@@ -10,7 +10,10 @@ require('dotenv').config()
 
 app.use(cors({
   origin: [
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://655575e643d1111e41045f8f--creative-rolypoly-281346.netlify.app',
+    'https://os-hotel-booking.web.app'
+  
   ],
   credentials: true
 }));
@@ -62,7 +65,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     
-    await client.connect();
+    // await client.connect();
 
     const room = client.db("hoteBooking");
     const roomColection = room.collection('roomDeatis')
@@ -115,14 +118,32 @@ async function run() {
 
    app.get('/booking', logger, varifitoken, async(req, res) =>{
    console.log("token owner info", req.user);
-   
-   if (req.user.email !== req.params.email) {
-    return res.status(403).send({message: "forbidden Access"})
-  }
     const cursor =  bookingRoomColection.find();
     const result = await cursor.toArray();
     res.send(result)
  });
+
+//  for another booking data colect
+
+
+//  app.get('/book',  async(req, res) =>{
+//   console.log("token owner info", req.user);
+//    const cursor =  bookingRoomColection.find();
+//    const result = await cursor.toArray();
+//    res.send(result)
+// });
+
+
+// app.get('/book/:id', async(req, res) =>{
+//   const id = req.params.id;
+//   const query= {_id: new ObjectId(id)}
+//   const result = await bookingRoomColection.findOne(query)
+//   res.send(result)
+//  })
+
+ //  for another booking data colect end
+
+
 
  app.get('/update', async(req, res) =>{
   const cursor =  bookingRoomColection.find();
@@ -151,7 +172,6 @@ app.get('/update/:id', async(req, res) =>{
 app.get('/booking/:email', logger, varifitoken, async(req, res) =>{
   
   const bookingEmail = req.params.email;
-
 
 
    if (req.user.email !== req.params.email) {
@@ -210,30 +230,68 @@ app.get('/review-customer', async(req, res) =>{
 // for main room update
 
 
-// app.put('/room/update/:id', async(req, res) =>{
-//   const id = req.params.id
-//   const room = req.body;
-//   console.log(id, room);
+app.put('/rooms/updateAvailability/:id', async(req, res) =>{
+  const id = req.params.id
+  const room = req.body;
+  console.log(id, room);
 
-//   const filter = {_id: new ObjectId(id)}
-//   const options = {upsert: true};
-//   const updateRoom = {
-//     $set: {
-//       bookDate: room.bookDate,
-//       chekOutDate: room.chekOutDate,
-//       dayCount: room.dayCount,
-//       email: room.email
-//     }
-//   }
+  const filter = {_id: new ObjectId(id)}
+  const options = {upsert: true};
+  const updateRoom = {
+    $set: {
+      seat: room.seat,
+      email: room.email,
+      bookDate: room.bookDate,
+      chekOutDate: room.chekOutDate,
+    }
+  }
 
-//   const result = await roomColection .updateOne(filter, updateRoom, options)
-//   res.send(result)
-// })
+  const result = await roomColection .updateOne(filter, updateRoom, options)
+  res.send(result)
+})
 
    app.post('/booking', async(req, res) =>{
     const book = req.body;
     console.log(book);
     const result = await bookingRoomColection.insertOne(book)
+    res.send(result)
+   })
+
+
+   app.put('/booking/update/:id', async(req, res) =>{
+    const id = req.params.id
+    const room = req.body;
+    console.log(id, room);
+  
+    const filter = {_id: new ObjectId(id)}
+    const options = {upsert: true};
+    const updateRoom = {
+      $set: {
+        bookingSeat: room.bookingSeat,
+        seat: room.seat,
+        bookDate: room.bookDate,
+        chekOutDate: room.chekOutDate,
+        dayCount: room.dayCount,
+      }
+    }
+  
+    const result = await bookingRoomColection.updateOne(filter, updateRoom, options)
+    res.send(result)
+  })
+
+
+  app.patch('/booking/update/:id', async(req,res) =>{
+    const id = req.params.id;
+    const filter = {_id: new ObjectId(id)}
+    const updateStatus = req.body;
+    console.log(updateStatus);
+    const updateDoc = {
+      $set: {
+        status: updateStatus.status
+      }
+    }
+  
+    const result = await bookingRoomColection.updateOne(filter, updateDoc)
     res.send(result)
    })
 
